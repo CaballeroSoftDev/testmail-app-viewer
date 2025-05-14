@@ -1,54 +1,58 @@
-# React + TypeScript + Vite
+# mail-test-app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una interfaz web para visualizar correos electrónicos de Testmail.app de forma gráfica.
 
-Currently, two official plugins are available:
+## Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Esta aplicación permite gestionar y leer correos enviados a un namespace de Testmail.app sin mostrar el JSON directamente, ofreciendo:
 
-## Expanding the ESLint configuration
+- Un modal de configuración para API Key y Namespace.
+- Panel lateral con filtros (tag prefix, límite, offset, rango de fechas) y botón de refresco.
+- Lista de correos con avatar, asunto, remitente y fecha.
+- Panel de lectura con vista detallada del correo (HTML o texto). 
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Funcionalidad principal
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Configurar API Key y Namespace desde un modal.
+2. Filtrar correos por:
+   - Tag Prefix
+   - Límite y Offset
+   - Fecha de envío (desde / hasta)
+3. Refrescar la lista de correos sin recargar la página.
+4. Navegar la lista con scroll independiente.
+5. Ver contenido detallado de cada correo en un panel expandido.
+
+## Tecnologías
+
+- React 19 + TypeScript
+- Vite
+- Material UI v7 (MUI)
+- MUI X Date Pickers (@mui/x-date-pickers)
+- date-fns (formato y localización de fechas)
+
+## Instalación
+
+```bash
+# Clonar el repositorio
+git clone <URL-del-repositorio>
+cd mail-test-app
+
+# Instalar dependencias
+yarn
+
+# Iniciar en modo desarrollo
+yarn dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Abrir en el navegador: `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Uso
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+1. Hacer clic en el icono de configuración (engranaje) en la cabecera.
+2. Ingresar tu API Key y Namespace.
+3. Ajustar los filtros y hacer clic en **REFRESH**.
+4. Seleccionar un correo en la lista para ver su contenido.
+
+## Licencia
+
+Este proyecto está bajo la [MIT License](LICENSE).
