@@ -90,7 +90,7 @@ function App() {
             namespace={namespace}
           />
         </Box>
-        <Box sx={{ flex: 1, boxShadow: 2, bgcolor: '#fafbfc', borderRadius: 3, m: 3, mb: 3, ml: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        <Box sx={{ flex: 1, boxShadow: 2, bgcolor: '#fafbfc', borderRadius: 3, m: 3, mb: 3, ml: 0, display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: '85vh', overflowY: 'auto' }}>
           <EmailView email={selectedEmail} apiKey={apiKey} namespace={namespace} />
         </Box>
       </Box>

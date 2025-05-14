@@ -1,5 +1,5 @@
-import React from 'react';
-import { Paper, Typography, Box, Divider, IconButton, Tooltip, Stack } from '@mui/material';
+import React, { useState } from 'react';
+import { Paper, Typography, Box, Divider, IconButton, Tooltip, Stack, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { format } from 'date-fns';
@@ -24,6 +24,7 @@ interface EmailViewProps {
 }
 
 const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
+  const [showHtml, setShowHtml] = useState(true);
   const handleCopy = () => {
     if (email) {
       navigator.clipboard.writeText(email.text || '');
@@ -69,6 +70,14 @@ const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
               <ContentCopyIcon />
             </IconButton>
           </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setShowHtml((prev) => !prev)}
+            sx={{ ml: 1 }}
+          >
+            {showHtml ? 'Show Text' : 'Show HTML'}
+          </Button>
         </Stack>
       </Box>
       <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
@@ -84,7 +93,7 @@ const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
       </Box>
       <Divider sx={{ mb: 2 }} />
       <Box sx={{ mt: 2, background: '#fff', borderRadius: 2, p: 3, minHeight: 200 }}>
-        {email.html ? (
+        {showHtml && email.html ? (
           <div dangerouslySetInnerHTML={{ __html: email.html }} style={{ fontSize: 16, color: '#222' }} />
         ) : (
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap', fontSize: 16, color: '#222' }}>
