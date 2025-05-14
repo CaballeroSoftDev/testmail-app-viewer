@@ -49,11 +49,11 @@ function App() {
         setEmails(data.emails);
         setCount(data.count);
       } else {
-        setError('Error al cargar los correos');
+        setError(data.message);
         setEmails([]);
       }
     } catch (err) {
-      setError('Error al conectar con el servidor');
+      setError('Error connecting to server');
       setEmails([]);
     } finally {
       setLoading(false);
@@ -91,7 +91,7 @@ function App() {
           />
         </Box>
         <Box sx={{ flex: 1, boxShadow: 2, bgcolor: '#fafbfc', borderRadius: 3, m: 3, mb: 3, ml: 0, display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: '85vh', overflowY: 'auto' }}>
-          <EmailView email={selectedEmail} apiKey={apiKey} namespace={namespace} />
+          <EmailView email={selectedEmail} apiKey={apiKey} namespace={namespace} error={error} />
         </Box>
       </Box>
     </Box>

@@ -21,9 +21,10 @@ interface EmailViewProps {
   email: Email | null;
   apiKey: string;
   namespace: string;
+  error: string | null;
 }
 
-const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
+const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace, error }) => {
   const [showHtml, setShowHtml] = useState(true);
   const handleCopy = () => {
     if (email) {
@@ -40,6 +41,17 @@ const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
       </Paper>
     );
   }
+
+  if (error) {
+    return (
+      <Paper elevation={3} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', borderRadius: 3 }}>
+        <Typography color="text.secondary" align="center">
+          {error}
+        </Typography>
+      </Paper>
+    );
+  }
+
 
   if (!email) {
     return (
