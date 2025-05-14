@@ -25,6 +25,8 @@ interface EmailListProps {
   selectedEmailId?: string | null;
   onRefresh?: (filters: FilterParams) => void;
   loading?: boolean;
+  apiKey: string;
+  namespace: string;
 }
 
 const getInitials = (from: string) => {
@@ -35,7 +37,17 @@ const getInitials = (from: string) => {
   return from.charAt(0).toUpperCase();
 };
 
-const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEmailId, onRefresh, loading, count }) => {
+const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEmailId, onRefresh, loading, count, apiKey, namespace }) => {
+  if (!apiKey || !namespace) {
+    return (
+      <Paper elevation={3} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', borderRadius: 3 }}>
+        <Typography color="text.secondary" align="center">
+          Configura tu API Key y Namespace para ver los correos.
+        </Typography>
+      </Paper>
+    );
+  }
+
   const [tagPrefix, setTagPrefix] = useState('');
   const [limit, setLimit] = useState(100);
   const [offset, setOffset] = useState(0);

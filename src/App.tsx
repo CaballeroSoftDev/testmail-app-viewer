@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, AppBar, Toolbar, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Box } from '@mui/material';
 import EmailList from './components/EmailList';
 import EmailView from './components/EmailView';
 import type { FilterParams } from './components/EmailList';
+import TopBar from './components/TopBar';
 
 interface Email {
   id: string;
@@ -23,9 +23,6 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState('');
   const [namespace, setNamespace] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [formApiKey, setFormApiKey] = useState('');
-  const [formNamespace, setFormNamespace] = useState('');
   const [filters, setFilters] = useState<FilterParams>({
     tagPrefix: '',
     limit: 100,
@@ -68,18 +65,6 @@ function App() {
     // eslint-disable-next-line
   }, [apiKey, namespace]);
 
-  const handleOpenModal = () => {
-    setFormApiKey(apiKey);
-    setFormNamespace(namespace);
-    setModalOpen(true);
-  };
-
-  const handleSave = () => {
-    setApiKey(formApiKey.trim());
-    setNamespace(formNamespace.trim());
-    setModalOpen(false);
-  };
-
   const handleRefresh = (newFilters: FilterParams) => {
     setFilters(newFilters);
     if (apiKey && namespace) {
@@ -89,66 +74,24 @@ function App() {
 
   return (
     <Box sx={{ minHeight: '100vh', background: '#f5f6fa' }}>
-      <AppBar position="static" color="primary" elevation={2} sx={{ mb: 1 }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ fontWeight: 'bold', letterSpacing: 1, flexGrow: 1 }}>
-            Bandeja de Entrada
-          </Typography>
-          <IconButton color="inherit" onClick={handleOpenModal}>
-            <SettingsIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DialogTitle sx={{ textAlign: 'center' }}>Configuración de API</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 350 }}>
-          <TextField
-            sx={{ mt: 2}}
-            label="API Key"
-            value={formApiKey}
-            onChange={e => setFormApiKey(e.target.value)}
-            fullWidth
-            autoFocus
-            type="password"
+      <TopBar apiKey={apiKey} setApiKey={setApiKey} namespace={namespace} setNamespace={setNamespace} />
+      <Box sx={{ display: 'flex', flex: 1, minHeight: 0, px: 0, py: 0 }}>
+        <Box sx={{ width: 370, minWidth: 260, maxWidth: 400, height: '85vh', overflowY: 'auto', boxShadow: 2, bgcolor: '#fff', borderRadius: 3, m: 3, mb: 3, display: 'flex', flexDirection: 'column' }}>
+          <EmailList
+            emails={emails}
+            onSelectEmail={setSelectedEmail}
+            selectedEmailId={selectedEmail?.id}
+            onRefresh={handleRefresh}
+            loading={loading}
+            count={count}
+            apiKey={apiKey}
+            namespace={namespace}
           />
-          <TextField
-            label="Namespace"
-            value={formNamespace}
-            onChange={e => setFormNamespace(e.target.value)}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setModalOpen(false)}>Cancelar</Button>
-          <Button onClick={handleSave} variant="contained">Guardar</Button>
-        </DialogActions>
-      </Dialog>
-      {(!apiKey || !namespace) ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-          <Typography color="text.secondary">Configura tu API Key y Namespace para ver los correos.</Typography>
         </Box>
-      )
-       : error ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-          <Typography color="error">{error}</Typography>
+        <Box sx={{ flex: 1, boxShadow: 2, bgcolor: '#fafbfc', borderRadius: 3, m: 3, mb: 3, ml: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <EmailView email={selectedEmail} apiKey={apiKey} namespace={namespace} />
         </Box>
-      ) : (
-        <Box sx={{ display: 'flex', flex: 1, minHeight: 0, px: 0, py: 0 }}>
-          <Box sx={{ width: 370, minWidth: 260, maxWidth: 400, height: '85vh', overflowY: 'auto', boxShadow: 2, bgcolor: '#fff', borderRadius: 3, m: 3, mb: 3, display: 'flex', flexDirection: 'column' }}>
-            <EmailList
-              emails={emails}
-              onSelectEmail={setSelectedEmail}
-              selectedEmailId={selectedEmail?.id}
-              onRefresh={handleRefresh}
-              loading={loading}
-              count={count}
-            />
-          </Box>
-          <Box sx={{ flex: 1, boxShadow: 2, bgcolor: '#fafbfc', borderRadius: 3, m: 3, mb: 3, ml: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            <EmailView email={selectedEmail} />
-          </Box>
-        </Box>
-      )}
+      </Box>
     </Box>
   );
 }

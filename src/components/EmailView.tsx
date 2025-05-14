@@ -17,14 +17,26 @@ interface Email {
 
 interface EmailViewProps {
   email: Email | null;
+  apiKey: string;
+  namespace: string;
 }
 
-const EmailView: React.FC<EmailViewProps> = ({ email }) => {
+const EmailView: React.FC<EmailViewProps> = ({ email, apiKey, namespace }) => {
   const handleCopy = () => {
     if (email) {
       navigator.clipboard.writeText(email.text || '');
     }
   };
+
+  if (!apiKey || !namespace) {
+    return (
+      <Paper elevation={3} sx={{ p: 4, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fafbfc', borderRadius: 3 }}>
+        <Typography variant="h6" color="text.secondary" align="center">
+          Configura tu API Key y Namespace para ver el contenido de los correos.
+        </Typography>
+      </Paper>
+    );
+  }
 
   if (!email) {
     return (
