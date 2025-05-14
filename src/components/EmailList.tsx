@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Typography, Paper, Divider, Box, TextField, Button, Stack, CircularProgress, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Typography, Paper, Divider, Box, TextField, Button, Stack, CircularProgress, Select, MenuItem, FormControl, InputLabel, Autocomplete } from '@mui/material';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -7,6 +7,8 @@ interface Email {
   id: string;
   subject: string;
   from: string;
+  to: string;
+  tag: string;
   date: number;
   text: string;
   html: string;
@@ -42,7 +44,7 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
     return (
       <Paper elevation={3} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', borderRadius: 3 }}>
         <Typography color="text.secondary" align="center">
-          Configura tu API Key y Namespace para ver los correos.
+          Set your API Key and Namespace to view emails.
         </Typography>
       </Paper>
     );
@@ -100,6 +102,8 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
     });
   };
 
+  const tagPrefixOptions = Array.from(new Set(emails.map(email => email.tag.split(' ')[0])));
+
   return (
     <Paper elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 3 }}>
       <Box sx={{ p: 2, pb: 1, borderBottom: '1px solid #eee', background: '#fff', zIndex: 1 }}>
@@ -113,14 +117,21 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
           >
             REFRESH
           </Button>
-          <TextField
-            label="Tag Prefix"
+          <Autocomplete
+            freeSolo
+            options={tagPrefixOptions}
             value={tagPrefix}
-            onChange={e => setTagPrefix(e.target.value)}
-            size="small"
-            fullWidth
-            sx={{ borderRadius: 4 }}
-            InputProps={{ style: { borderRadius: 20 } }}
+            onInputChange={(_, newValue) => setTagPrefix(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Tag Prefix"
+                size="small"
+                fullWidth
+                sx={{ borderRadius: 4 }}
+                InputProps={{ ...params.InputProps, style: { borderRadius: 20 } }}
+              />
+            )}
           />
           <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
             <Button
@@ -133,7 +144,7 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
               &lt;
             </Button>
             <Typography variant="body2">
-              Página {page + 1} de {totalPages}
+              Page {page + 1} of {totalPages}
             </Typography>
             <Button
               variant="outlined"
@@ -200,10 +211,15 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
                     secondary={
                       <>
                         <Typography component="span" variant="body2" color="text.primary">
-                          {email.from}
+                          <b>From:</b> {email.from}
                         </Typography>
-                        <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                          {format(new Date(email.date), 'PPp', { locale: es })}
+                        <br/>
+                        <Typography component="span" variant="body2" color="text.secondary">
+                          <b>Date:</b> {format(new Date(email.date), 'PPp', { locale: es })}
+                        </Typography>
+                        <br/>
+                        <Typography component="span" variant="body2" color="text.secondary">
+                          <b>To:</b> {email.to}
                         </Typography>
                       </>
                     }

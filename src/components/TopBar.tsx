@@ -53,7 +53,7 @@ const TopBar: React.FC<TopBarProps> = ({ apiKey, setApiKey, namespace, setNamesp
             onClick={handleSave}
             sx={{ borderRadius: 2, fontWeight: 'bold', minWidth: 100 }}
           >
-            Guardar
+            Save
           </Button>
         </Box>
       </Toolbar>
