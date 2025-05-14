@@ -24,7 +24,7 @@ const TopBar: React.FC<TopBarProps> = ({ apiKey, setApiKey, namespace, setNamesp
           Testmail.app Mail Viewer
           <span style={{ fontSize: 12, fontWeight: 'normal', marginLeft: 10 }}>
             by
-            <a style={{ color: 'white', textDecoration: 'underline', marginLeft: 5 }} href="https://github.com/Caballero-dev">
+            <a style={{ color: 'white', textDecoration: 'underline', marginLeft: 5 }} href="https://github.com/CaballeroSoftDev/testmail-app-viewer">
               Caballero-dev
             </a>
           </span>
