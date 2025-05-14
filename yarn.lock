@@ -168,18 +168,6 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
-"@date-io/core@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@date-io/core/-/core-3.2.0.tgz#7c8985ac26ccacf4f1b1fec10e2e22c75a28288a"
-  integrity sha512-hqwXvY8/YBsT9RwQITG868ZNb1MVFFkF7W1Ecv4P472j/ZWa7EFcgSmxy8PUElNVZfvhdvfv+a8j6NWJqOX5mA==
-
-"@date-io/date-fns@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@date-io/date-fns/-/date-fns-3.2.1.tgz#907aa974c150b3f2d2d79b0f6e18b0fe64c7f051"
-  integrity sha512-CtXgTOAamkImI+CmbWRNdBi4ljj9xm/tdoPa+eeeiygduzubJTsXp18vYz+Vs/9yLho1zUOXlxpsfsF7PsXSWQ==
-  dependencies:
-    "@date-io/core" "^3.2.0"
-
 "@emotion/babel-plugin@^11.13.5":
   version "11.13.5"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.13.5.tgz#eab8d65dbded74e0ecfd28dc218e75607c4e7bc0"
@@ -638,7 +626,7 @@
   dependencies:
     "@babel/runtime" "^7.27.1"
 
-"@mui/utils@^7.0.2", "@mui/utils@^7.1.0":
+"@mui/utils@^7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@mui/utils/-/utils-7.1.0.tgz#464c0c1bc8f57c07d934ac674f3dcc81ac24f68b"
   integrity sha512-/OM3S8kSHHmWNOP+NH9xEtpYSG10upXeQ0wLZnfDgmgadTAk5F4MQfFLyZ5FCRJENB3eRzltMmaNl6UtDnPovw==
@@ -649,27 +637,6 @@
     clsx "^2.1.1"
     prop-types "^15.8.1"
     react-is "^19.1.0"
-
-"@mui/x-date-pickers@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-8.3.0.tgz#33fe42e3c055cc0ee2a4a97395cb37844996419d"
-  integrity sha512-N4Rw/Q6bAHBj7BpLEGE84MG05B56wWQStZch9NqA0U8vTt9TGvkj27fQaboOIikk6ERQTHM2mMoLZgwQAvlhIw==
-  dependencies:
-    "@babel/runtime" "^7.27.1"
-    "@mui/utils" "^7.0.2"
-    "@mui/x-internals" "8.3.0"
-    "@types/react-transition-group" "^4.4.12"
-    clsx "^2.1.1"
-    prop-types "^15.8.1"
-    react-transition-group "^4.4.5"
-
-"@mui/x-internals@8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@mui/x-internals/-/x-internals-8.3.0.tgz#0255ad37dcf2451e3f01d6820391cf368b68b7b5"
-  integrity sha512-wSVxg5aSO9xvJT7oarhsXqr03NeP355Whm7Qn6z3VvxdGwNc7K7vKpez3E+2KMxtdvywOmragwlSdTaO1K6qkg==
-  dependencies:
-    "@babel/runtime" "^7.27.1"
-    "@mui/utils" "^7.0.2"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
