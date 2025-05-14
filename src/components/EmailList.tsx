@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Typography, Paper, Divider, Box, TextField, Button, Stack } from '@mui/material';
+import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Typography, Paper, Divider, Box, TextField, Button, Stack, CircularProgress, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 interface Email {
   id: string;
@@ -18,12 +16,11 @@ export type FilterParams = {
   tagPrefix: string;
   limit: number;
   offset: number;
-  fromTimestamp: string;
-  toTimestamp: string;
 };
 
 interface EmailListProps {
   emails: Email[];
+  count: number;
   onSelectEmail: (email: Email) => void;
   selectedEmailId?: string | null;
   onRefresh?: (filters: FilterParams) => void;
@@ -38,23 +35,57 @@ const getInitials = (from: string) => {
   return from.charAt(0).toUpperCase();
 };
 
-const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEmailId, onRefresh, loading }) => {
+const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEmailId, onRefresh, loading, count }) => {
   const [tagPrefix, setTagPrefix] = useState('');
   const [limit, setLimit] = useState(100);
   const [offset, setOffset] = useState(0);
-  const [fromTimestamp, setFromTimestamp] = useState<string>('');
-  const [toTimestamp, setToTimestamp] = useState<string>('');
+  const [page, setPage] = useState(0);
+  const totalPages = Math.ceil(count / limit);
 
   const handleRefresh = () => {
     if (onRefresh) {
       onRefresh({
         tagPrefix,
         limit,
-        offset,
-        fromTimestamp,
-        toTimestamp,
+        offset
       });
     }
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages - 1) {
+      setPage(page + 1);
+      setOffset((page + 1) * limit);
+      if (onRefresh) onRefresh({
+        tagPrefix,
+        limit,
+        offset: (page + 1) * limit,
+      });
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 0) {
+      setPage(page - 1);
+      setOffset((page - 1) * limit);
+      if (onRefresh) onRefresh({
+        tagPrefix,
+        limit,
+        offset: (page - 1) * limit,
+      });
+    }
+  };
+
+  const handleLimitChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const newLimit = Number(event.target.value);
+    setLimit(newLimit);
+    setPage(0);
+    setOffset(0);
+    if (onRefresh) onRefresh({
+      tagPrefix,
+      limit: newLimit,
+      offset: 0,
+    });
   };
 
   return (
@@ -64,7 +95,7 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
           <Button
             variant="outlined"
             fullWidth
-            sx={{ borderRadius: 4, fontWeight: 'bold', fontSize: 18, mb: 1, py: 1 }}
+            sx={{ borderRadius: 4, fontWeight: 'bold', fontSize: 18, mb: 1, py: .5 }}
             onClick={handleRefresh}
             disabled={loading}
           >
@@ -79,89 +110,98 @@ const EmailList: React.FC<EmailListProps> = ({ emails, onSelectEmail, selectedEm
             sx={{ borderRadius: 4 }}
             InputProps={{ style: { borderRadius: 20 } }}
           />
-          <Stack direction="row" spacing={1}>
-            <TextField
-              label="Limit"
-              value={limit}
-              onChange={e => setLimit(Number(e.target.value))}
-              size="small"
-              type="number"
-              fullWidth
+          <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
+            <Button
+              variant="outlined"
+              size='small'
+              onClick={handlePreviousPage}
+              disabled={page === 0 || loading}
               sx={{ borderRadius: 4 }}
-              InputProps={{ style: { borderRadius: 20 } }}
-            />
-            <TextField
-              label="Offset"
-              value={offset}
-              onChange={e => setOffset(Number(e.target.value))}
-              size="small"
-              type="number"
-              fullWidth
+            >
+              &lt;
+            </Button>
+            <Typography variant="body2">
+              Página {page + 1} de {totalPages}
+            </Typography>
+            <Button
+              variant="outlined"
+              size='small'
+              onClick={handleNextPage}
+              disabled={page >= totalPages - 1 || loading}
               sx={{ borderRadius: 4 }}
-              InputProps={{ style: { borderRadius: 20 } }}
-            />
+            >
+              &gt;
+            </Button>
+            <FormControl variant="outlined" size="small" sx={{ minWidth: 80 }}>
+              <InputLabel id="limit-select-label">Limit</InputLabel>
+              <Select
+                labelId="limit-select-label"
+                id="limit-select"
+                value={limit}
+                onChange={handleLimitChange as any}
+                label="Limit"
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </Select>
+            </FormControl>
           </Stack>
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-            <Stack direction="row" spacing={1}>
-              <DatePicker
-                label="From Timestamp"
-                value={fromTimestamp ? new Date(fromTimestamp) : null}
-                onChange={date => setFromTimestamp(date ? format(date, 'yyyy-MM-dd') : '')}
-                slotProps={{ textField: { size: 'small', fullWidth: true, sx: { borderRadius: 4 }, InputProps: { style: { borderRadius: 20 } }, InputLabelProps: { shrink: true } } }}
-              />
-              <DatePicker
-                label="To Timestamp"
-                value={toTimestamp ? new Date(toTimestamp) : null}
-                onChange={date => setToTimestamp(date ? format(date, 'yyyy-MM-dd') : '')}
-                slotProps={{ textField: { size: 'small', fullWidth: true, sx: { borderRadius: 4 }, InputProps: { style: { borderRadius: 20 } }, InputLabelProps: { shrink: true } } }}
-              />
-            </Stack>
-          </LocalizationProvider>
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <span>Total: {count} emails</span>
+          </Stack>
         </Stack>
       </Box>
       <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <List sx={{ minHeight: 0 }}>
-          {emails.map((email, index) => (
-            <React.Fragment key={email.id}>
-              <ListItemButton
-                selected={selectedEmailId === email.id}
-                onClick={() => onSelectEmail(email)}
-                sx={{
-                  alignItems: 'flex-start',
-                  py: 2,
-                  px: 2,
-                  borderLeft: selectedEmailId === email.id ? '4px solid #1976d2' : '4px solid transparent',
-                  background: selectedEmailId === email.id ? '#e3f2fd' : 'inherit',
-                  transition: 'background 0.2s',
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: '#1976d2', color: '#fff', fontWeight: 'bold' }}>
-                    {getInitials(email.from)}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#222' }}>
-                      {email.subject}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      <Typography component="span" variant="body2" color="text.primary">
-                        {email.from}
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <List sx={{ minHeight: 0 }}>
+            {emails.map((email, index) => (
+              <React.Fragment key={email.id}>
+                <ListItemButton
+                  selected={selectedEmailId === email.id}
+                  onClick={() => onSelectEmail(email)}
+                  sx={{
+                    alignItems: 'flex-start',
+                    py: 2,
+                    px: 2,
+                    borderLeft: selectedEmailId === email.id ? '4px solid #1976d2' : '4px solid transparent',
+                    background: selectedEmailId === email.id ? '#e3f2fd' : 'inherit',
+                    transition: 'background 0.2s',
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: '#1976d2', color: '#fff', fontWeight: 'bold' }}>
+                      {getInitials(email.from)}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#222' }}>
+                        {email.subject}
                       </Typography>
-                      <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                        {format(new Date(email.date), 'PPp', { locale: es })}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItemButton>
-              {index < emails.length - 1 && <Divider variant="inset" component="li" />}
-            </React.Fragment>
-          ))}
-        </List>
+                    }
+                    secondary={
+                      <>
+                        <Typography component="span" variant="body2" color="text.primary">
+                          {email.from}
+                        </Typography>
+                        <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                          {format(new Date(email.date), 'PPp', { locale: es })}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItemButton>
+                {index < emails.length - 1 && <Divider variant="inset" component="li" />}
+              </React.Fragment>
+            ))}
+          </List>
+        )}
       </Box>
     </Paper>
   );
